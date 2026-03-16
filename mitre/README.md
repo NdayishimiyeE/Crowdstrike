@@ -33,3 +33,7 @@ The layer will render with all confirmed techniques highlighted and color-coded 
 Each color represents a tactic phase in the attack chain, making it easy to visually trace the progression of the intrusion across the ATT&CK matrix at a glance.
 
 > Each technique entry includes a detailed comment describing exactly what was observed in CrowdStrike Falcon, visible when you hover over or click a technique in the Navigator.
+>
+> <img width="1440" height="814" alt="ATT CK Navigator SC" src="https://github.com/user-attachments/assets/0ec996dd-5c45-4653-95b3-4cf4792e9a9f" />
+
+
