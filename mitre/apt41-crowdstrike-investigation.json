@@ -1,0 +1,192 @@
+{
+  "name": "APT41 Intrusion — CrowdStrike Investigation",
+  "versions": {
+    "attack": "14",
+    "navigator": "5.1.0",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "MITRE ATT&CK layer mapping observed APT41 (Wicked Panda) TTPs detected during a CrowdStrike Falcon endpoint triage and Next-Gen SIEM investigation on host 5236A4. Each technique reflects a confirmed detection or log finding. Techniques are color-coded by tactic phase.",
+  "filters": {
+    "platforms": [
+      "Windows"
+    ]
+  },
+  "sorting": 0,
+  "layout": {
+    "layout": "side",
+    "aggregateFunction": "average",
+    "showID": true,
+    "showName": true,
+    "showAggregateScores": false,
+    "countUnscored": false,
+    "expandedSubtechniques": "annotated"
+  },
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1110",
+      "tactic": "initial-access",
+      "color": "#e8a838",
+      "comment": "CONFIRMED — Multiple UserLogonFailed events detected on host 5236A4 via CrowdStrike Next-Gen SIEM. Query: #event_simpleName contains UserLogonFailed AND ComputerName = 5236A4. Consistent with APT41's documented password spraying against RDP and local admin accounts.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1110.001",
+      "tactic": "initial-access",
+      "color": "#e8a838",
+      "comment": "CONFIRMED (sub-technique) — Password guessing/spraying inferred from high-volume UserLogonFailed events. Likely targeting built-in Administrator account. APT41 documented use of brute force for initial RDP access.",
+      "enabled": true,
+      "metadata": [],
+      "links": []
+    },
+    {
+      "techniqueID": "T1546",
+      "tactic": "persistence",
+      "color": "#c53b3b",
+      "comment": "CONFIRMED (parent) — Event Triggered Execution via Accessibility Features hijack. CrowdStrike flagged IFEO registry modification. See sub-technique T1546.008.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1546.008",
+      "tactic": "persistence",
+      "color": "#c53b3b",
+      "comment": "CONFIRMED — CrowdStrike Falcon Detection: Registry key HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\sethc.exe modified. Debugger value set to C:\\windows\\system32\\cmd.exe. Enables pre-authentication SYSTEM shell via RDP Sticky Keys (5x Shift). Tactic: Persistence.",
+      "enabled": true,
+      "metadata": [],
+      "links": []
+    },
+    {
+      "techniqueID": "T1105",
+      "tactic": "command-and-control",
+      "color": "#7a4f9e",
+      "comment": "CONFIRMED (x2 instances) — certutil.exe abused as LOLBin to download remote files on host 5236A4. First instance: downloaded script.ps1. Second instance: dropped Isass.exe (malicious masqueraded executable). Classic APT41 ingress tool transfer technique.",
+      "enabled": true,
+      "metadata": [],
+      "links": []
+    },
+    {
+      "techniqueID": "T1059",
+      "tactic": "execution",
+      "color": "#5a8fcc",
+      "comment": "CONFIRMED (parent) — Scripting interpreter used for payload execution. See sub-technique T1059.001 (PowerShell).",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1059.001",
+      "tactic": "execution",
+      "color": "#5a8fcc",
+      "comment": "CONFIRMED — script.ps1 executed with -DumpCreds parameter. Identified via Next-Gen SIEM event search: Any field contains script.ps1 AND ComputerName = 5236A4. PowerShell used as execution wrapper for Mimikatz credential dumping. Tactic: Credential Access.",
+      "enabled": true,
+      "metadata": [],
+      "links": []
+    },
+    {
+      "techniqueID": "T1003",
+      "tactic": "credential-access",
+      "color": "#d4b83a",
+      "comment": "CONFIRMED (parent) — Credential dumping activity observed. See sub-technique T1003.001 (LSASS Memory).",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1003.001",
+      "tactic": "credential-access",
+      "color": "#d4b83a",
+      "comment": "CONFIRMED — script.ps1 executed with -DumpCreds parameter, consistent with Mimikatz LSASS memory dumping. Detected via CrowdStrike Next-Gen SIEM. Tactic: Credential Access. All credentials on host 5236A4 should be treated as compromised.",
+      "enabled": true,
+      "metadata": [],
+      "links": []
+    },
+    {
+      "techniqueID": "T1036",
+      "tactic": "defense-evasion",
+      "color": "#4aab4a",
+      "comment": "CONFIRMED (parent) — Masquerading technique used. See sub-technique T1036.005.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1036.005",
+      "tactic": "defense-evasion",
+      "color": "#4aab4a",
+      "comment": "CONFIRMED — File Isass.exe (capital I substituting lowercase L) dropped to C:\\Windows\\System32\\ to impersonate legitimate lsass.exe Windows process. Detected as new file on disk via second certutil.exe Falcon detection. SIEM query: CommandLine contains Isass.exe AND ComputerName = 5236A4.",
+      "enabled": true,
+      "metadata": [],
+      "links": []
+    },
+    {
+      "techniqueID": "T1543",
+      "tactic": "persistence",
+      "color": "#c53b3b",
+      "comment": "CONFIRMED (parent) — Malicious Windows service created. See sub-technique T1543.003.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1543.003",
+      "tactic": "persistence",
+      "color": "#c53b3b",
+      "comment": "CONFIRMED — Isass.exe (masqueraded executable) registered as a Windows service with path C:\\\\Windows\\\\System32\\\\Isass.exe. Provides persistent execution on every boot. Detected via CrowdStrike Next-Gen SIEM event search on CommandLine field for host 5236A4.",
+      "enabled": true,
+      "metadata": [],
+      "links": []
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#ffffff",
+      "#ff6666"
+    ],
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legendItems": [
+    {
+      "label": "Initial Access (Brute Force)",
+      "color": "#e8a838"
+    },
+    {
+      "label": "Persistence (Registry / Service)",
+      "color": "#c53b3b"
+    },
+    {
+      "label": "Execution (PowerShell)",
+      "color": "#5a8fcc"
+    },
+    {
+      "label": "Credential Access (Mimikatz)",
+      "color": "#d4b83a"
+    },
+    {
+      "label": "Defense Evasion (Masquerading)",
+      "color": "#4aab4a"
+    },
+    {
+      "label": "C2 / Staging (certutil LOLBin)",
+      "color": "#7a4f9e"
+    }
+  ],
+  "metadata": [],
+  "links": [],
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#1a1a2e",
+  "selectTechniquesAcrossTactics": false,
+  "selectSubtechniquesWithParent": false,
+  "selectVisibleTechniques": false
+}
