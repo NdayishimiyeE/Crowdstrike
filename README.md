@@ -171,17 +171,20 @@ AND: ComputerName → is equal to → 5236A4
 
 ```
 apt41-crowdstrike-investigation/
-├── README.md                        ← This file (investigation overview)
-├── docs/
-│   └── apt41-threat-profile.md      ← APT41 threat actor background
-├── iocs/
-│   └── ioc-list.md                  ← Indicators of Compromise
-├── detections/
-│   └── detection-notes.md           ← Falcon detection breakdown
-├── queries/
-│   └── siem-queries.md              ← CrowdStrike Next-Gen SIEM queries used
-└── incident-report/
-    └── incident-report.md           ← Full formal incident report
+   ├── README.md                        ← This file (investigation overview)
+   ├── docs/
+   │   └── apt41-threat-profile.md      ← APT41 threat actor background
+   ├── iocs/
+   │   └── ioc-list.md                  ← Indicators of Compromise
+   ├── detections/
+   │   └── detection-notes.md           ← Falcon detection breakdown
+   ├── queries/
+   │   └── siem-queries.md              ← CrowdStrike Next-Gen SIEM queries used
+   ├── incident-report/
+   │   └── incident-report.md           ← Full formal incident report
+   └── mitre/
+       ├── apt41-crowdstrike-investigation.json  ← ATT&CK Navigator layer (import at mitre-attack.github.io/attack-navigator)
+       └── README.md                            ← How to load the layer
 ```
 
 ---
